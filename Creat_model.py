@@ -10,7 +10,7 @@ class AggregatedLayerBlock(layers.Layer):
         # dim_num的值应为总通道数
         super(AggregatedLayerBlock, self).__init__()
         self.conv1 = layers.Conv1D(dim_num, 1, activation='swish')
-        self.conv2 = layers.Conv1D(dim_num, 3, activation='swish', padding='same')
+        self.conv2 = layers.Conv1D(4, 3, activation='swish', padding='same')
         self.conv3 = layers.Conv1D(dim_num, 1, activation='swish', padding='same')
 
     def __call__(self, inputs):
@@ -138,4 +138,3 @@ if __name__ == '__main__':
     m.summary()
     tf.keras.utils.plot_model(m, show_shapes=True)
     m.save('model.h5')
-    layers.LSTM()
