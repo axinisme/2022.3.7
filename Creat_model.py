@@ -4,14 +4,15 @@ from tensorflow.keras import layers
 DROPOUT_RATE = 0.5
 
 
-class AggregatedLayerBlock(layers.Layer):
+class AggregatedLayer(layers.Layer):
 
     def __init__(self, dim_num):
-        # dim_num的值应为总通道数
-        super(AggregatedLayerBlock, self).__init__()
-        self.conv1 = layers.Conv1D(4, 1, activation='swish')
-        self.conv2 = layers.Conv1D(4, 3, activation='swish', padding='same')
-        self.conv3 = layers.Conv1D(dim_num, 1, activation='swish', padding='same')
+        # dim_num的值应为输入总通道数
+        # 16为分组数及分组前的通道数，若进行分组，输入的通道数应大于等于分组数
+        super(AggregatedLayer, self).__init__()
+        self.conv1 = layers.Conv1D(16, 1, activation='swish')
+        self.conv2 = layers.Conv1D(16, 16, activation='swish', groups=16, padding="same")
+        self.conv3 = layers.Conv1D(dim_num, 1, activation='swish')
 
     def __call__(self, inputs):
         x = self.conv1(inputs)
@@ -23,24 +24,7 @@ class AggregatedLayerBlock(layers.Layer):
         x = self.conv3(x)
         x = layers.Dropout(DROPOUT_RATE)(x)
         x = layers.BatchNormalization()(x)
-        return x
-
-
-class AggregatedLayer(layers.Layer):
-    # dim_num的值应为总通道数
-    def __init__(self, dim_num):
-        super(AggregatedLayer, self).__init__()
-        self.layer = []
-        self.layer_sum_list = []
-        for i in range(16):
-            self.layer.append(AggregatedLayerBlock(dim_num))
-
-    def __call__(self, inputs):
-        x = inputs
-        for l in self.layer:
-            layer_out = l(x)
-            self.layer_sum_list.append(layer_out)
-        out = tf.add(tf.add_n(self.layer_sum_list), inputs)
+        out = tf.add(inputs, x)
         return out
 
 
