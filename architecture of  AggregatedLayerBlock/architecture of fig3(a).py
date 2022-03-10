@@ -8,8 +8,9 @@ class AggregatedLayerBlock(layers.Layer):
 
     def __init__(self, dim_num):
         # dim_num的值应为总通道数
+        # conv1d中的参数4为卷积层输出的通道数
         super(AggregatedLayerBlock, self).__init__()
-        self.conv1 = layers.Conv1D(dim_num, 1, activation='swish')
+        self.conv1 = layers.Conv1D(4, 1, activation='swish')
         self.conv2 = layers.Conv1D(4, 3, activation='swish', padding='same')
         self.conv3 = layers.Conv1D(dim_num, 1, activation='swish', padding='same')
 
@@ -42,3 +43,11 @@ class AggregatedLayer(layers.Layer):
             self.layer_sum_list.append(layer_out)
         out = tf.add(tf.add_n(self.layer_sum_list), inputs)
         return out
+
+
+if __name__ == "__main__":
+    inputs = layers.Input([5000, 12])
+    out = AggregatedLayer(12, 4)(inputs)
+    m = tf.keras.Model(inputs=inputs, outputs=out)
+    m.summary()
+    tf.keras.utils.plot_model(m, show_shapes=True)
