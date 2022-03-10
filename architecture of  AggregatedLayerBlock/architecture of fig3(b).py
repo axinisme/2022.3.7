@@ -34,12 +34,12 @@ class AggregatedLayer(layers.Layer):
             self.layer.append(AggregatedLayerBlock())
 
     def __call__(self, inputs):
-        x = inputs
         for l in self.layer:
-            layer_out = l(x)
+            layer_out = l(inputs)
             self.layer_out_list.append(layer_out)
         out = layers.Concatenate()(self.layer_out_list)
         out = self.conv(out)
+        out = tf.add(out, inputs)
         return out
 
 

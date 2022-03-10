@@ -37,9 +37,8 @@ class AggregatedLayer(layers.Layer):
             self.layer.append(AggregatedLayerBlock(dim_num))
 
     def __call__(self, inputs):
-        x = inputs
         for l in self.layer:
-            layer_out = l(x)
+            layer_out = l(inputs)
             self.layer_sum_list.append(layer_out)
         out = tf.add(tf.add_n(self.layer_sum_list), inputs)
         return out
