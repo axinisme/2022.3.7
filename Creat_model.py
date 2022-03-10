@@ -9,7 +9,7 @@ class AggregatedLayerBlock(layers.Layer):
     def __init__(self, dim_num):
         # dim_num的值应为总通道数
         super(AggregatedLayerBlock, self).__init__()
-        self.conv1 = layers.Conv1D(dim_num, 1, activation='swish')
+        self.conv1 = layers.Conv1D(4, 1, activation='swish')
         self.conv2 = layers.Conv1D(4, 3, activation='swish', padding='same')
         self.conv3 = layers.Conv1D(dim_num, 1, activation='swish', padding='same')
 
