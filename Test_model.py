@@ -1,12 +1,12 @@
 import tensorflow as tf
 import numpy as np
 import Creat_model
-
+from sklearn import metrics
 
 REPEAT_NUM = 50
 UNCERTAINTY_THRESH = 0.5
 model_keep_dropout = tf.keras.models.load_model('model_keep_dropout.h5')
-
+# 需要提供data_test, data_label
 # --------分别对单条数据进行预测，并得到模型的不确定性---------
 uncertainty_list = []
 for data in data_test:
@@ -28,8 +28,17 @@ certain_data_number = np.where(uncertainty_array < UNCERTAINTY_THRESH)
 uncertain_data_number = np.where(uncertainty_array >= UNCERTAINTY_THRESH)
 certain_data = data_test[certain_data_number]
 uncertain_data = data_test[uncertain_data_number]
+certain_data_label = data_label[certain_data_number]
+uncertain_data_label = data_label[uncertain_data_number]
 
 model_off_dropout = Creat_model.creat_model(training=False)
 model_off_dropout.load_weights("model_keep_dropout_weight.h5")  # 使用该模型进行最后的预测
 certain_class = model_off_dropout.predict(certain_data)
 uncertain_class = model_off_dropout.predict(uncertain_data)
+
+# 绘制混淆矩阵
+cm_certain = metrics.confusion_matrix(certain_data_label, certain_class)
+cm_certain_display = metrics.ConfusionMatrixDisplay(cm_certain).plot(cmap="Blues_r")
+
+cm_uncertain = metrics.confusion_matrix(uncertain_data_label, uncertain_class)
+cm_uncertain_display = metrics.ConfusionMatrixDisplay(cm_uncertain).plot(cmap="Blues_r")
