@@ -14,7 +14,7 @@ logdir = 'tensorboard_log/' + time
 os.makedirs(logdir)
 
 model = Creat_model.creat_model(training=True)
-loss_fn = losses.SparseCategoricalCrossentropy(from_logits=True)
+loss_fn = losses.SparseCategoricalCrossentropy()
 opti = optimizers.Adam(learning_rate=0.001)
 callback = [callbacks.ReduceLROnPlateau("val_sparse_categorical_crossentropy", 0.3, 6000, verbose=1, mode="max"),
             callbacks.ModelCheckpoint("model.h5", "val_sparse_categorical_crossentropy", verbose=1, save_best_only=1),

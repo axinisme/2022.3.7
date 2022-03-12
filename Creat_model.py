@@ -113,7 +113,7 @@ def creat_model(training):
     # 输出构建
     out = layers.GlobalAvgPool1D()(stage7_out)
     print("pool_out:", out)
-    out = layers.Dense(9)(out)  # 这里不使用激活函数是之后会使用未激活的数据
+    out = layers.Dense(9, activation='softmax')(out)  # 这里不使用激活函数是之后会使用未激活的数据
     print("class_out:", out)
     m = tf.keras.Model(inputs=inputs, outputs=out)
     return m
