@@ -35,7 +35,7 @@ class DownSampleLayerBlock(layers.Layer):
         super(DownSampleLayerBlock, self).__init__()
         self.conv1 = layers.Conv1D(dim_num, 2, strides=2, activation='swish')  # 进行两倍降采样的参数
         self.conv2 = layers.Conv1D(dim_num, 1, activation='swish')
-        self.convk = AggregatedLayer(dim_num)
+        self.convk = AggregatedLayer(dim_num, training)
         self.training = training
 
     def __call__(self, inputs):
@@ -57,7 +57,7 @@ class FormerLayerBlock(layers.Layer):
         super(FormerLayerBlock, self).__init__()
         self.conv1 = layers.Conv1D(target_dim, 2, padding='same', activation='swish')
         self.conv2 = layers.Conv1D(target_dim, 1, activation='swish')
-        self.convk = AggregatedLayer(target_dim)
+        self.convk = AggregatedLayer(target_dim, training)
         self.shortcut_conv = layers.Conv1D(target_dim, 1, activation='swish')
         self.training = training
 
